@@ -16,29 +16,36 @@ public class InvokerMetods : MonoBehaviour
     private KeyCode[] Combination_3;
     private int index;
     private List<KeyCode> CombinationUsed = new List<KeyCode>();
-    private KeyCode[] currentCombination;
-
+    private float lastKeyTime;
+    private float timeLimit = 2.0f; 
     void Start()
     {
         index = 0;
         ResetCombination();
 
     }
-
+    private void Update()
+    {
+        if (Time.time - lastKeyTime > timeLimit)
+        {
+            ResetCombination();
+        }
+    }
     private void OnEnable()
     {
         LisenKeyInputInBit.Pressed += ActiveCombination;
-        LisenKeyInputInBit.TimeOut += ResetCombination;
+        LisenKeyInputInBit.TimeOut += ResetCombinationOutTime;
     }
 
     private void OnDisable()
     {
         LisenKeyInputInBit.Pressed -= ActiveCombination;
-        LisenKeyInputInBit.TimeOut -= ResetCombination;
+        LisenKeyInputInBit.TimeOut -= ResetCombinationOutTime;
     }
 
     private void ActiveCombination(KeyCode ActiveKey)
     {
+        lastKeyTime = Time.time;
         if (IsCorrectCombination(Combination_1, ActiveKey))
         {
             TrueKey(ActiveKey);
@@ -79,12 +86,14 @@ public class InvokerMetods : MonoBehaviour
     }
     private bool IsCorrectCombination(KeyCode[] combination, KeyCode ActiveKey)
     {
-        if (combination[index] == ActiveKey)
+        for (int i = 0; i < CombinationUsed.Count; i++)
         {
-
-            return true;
+            if (CombinationUsed[i] != combination[i])
+            {
+                return false;  
+            }
         }
-        return false;
+        return combination[index] == ActiveKey;
     }
 
     private void Combination1Action()
@@ -141,6 +150,7 @@ public class InvokerMetods : MonoBehaviour
         }
         index = 0;
         CombinationUsed.Clear();
+        lastKeyTime = Time.time;
     }
     private IEnumerator Correct()
     {
@@ -154,7 +164,6 @@ public class InvokerMetods : MonoBehaviour
             SetSpriteTransparency(1f);
             yield return new WaitForSeconds(blinkDuration);
         }
-        ResetCombination();
     }
     private void SetSpriteTransparency(float alpha)
     {
