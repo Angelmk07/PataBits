@@ -124,7 +124,14 @@ public class InvokerMetods : MonoBehaviour
         }
         ShowKeys();
     }
+    private void ResetCombinationOutTime()
+    {
+        if(CombinationUsed != null)
+        {
+            ResetCombination();
+        }
 
+    }
     private void ResetCombination()
     {
         HideKeys();
@@ -133,6 +140,7 @@ public class InvokerMetods : MonoBehaviour
             text.color = Color.white;
         }
         index = 0;
+        CombinationUsed.Clear();
     }
     private IEnumerator Correct()
     {
@@ -145,10 +153,9 @@ public class InvokerMetods : MonoBehaviour
             yield return new WaitForSeconds(blinkDuration);
             SetSpriteTransparency(1f);
             yield return new WaitForSeconds(blinkDuration);
-            ResetCombination();
         }
+        ResetCombination();
     }
-
     private void SetSpriteTransparency(float alpha)
     {
         for(int i = 0; i < Texts.Length; i++)
@@ -157,7 +164,5 @@ public class InvokerMetods : MonoBehaviour
             newColor.a = alpha;
             Texts[i].color = newColor;
         }
-
-        
     }
 }
