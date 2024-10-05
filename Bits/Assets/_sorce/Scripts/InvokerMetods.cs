@@ -10,7 +10,7 @@ public class InvokerMetods : MonoBehaviour
     [SerializeField]
     private TextMeshProUGUI[] Texts;
     [SerializeField]
-    private GameObject Player;
+    private PlayerS Player;
     [SerializeField]
     private Vector3 PlayerSpeed = new Vector3(0.003f, 0, 0);
     [SerializeField]
@@ -23,17 +23,22 @@ public class InvokerMetods : MonoBehaviour
     private KeyCode[] Combination_3;
     [SerializeField]
     private KeyCode[] Combination_4;
-    private Rigidbody2D PlayerRb;
+    [SerializeField]
+    private KeyCode[] Combination_5;
+    [SerializeField]
+    private LayerMask layerEnemy;
     private int index;
     private List<KeyCode> CombinationUsed = new List<KeyCode>();
     private float lastKeyTime;
     private float timeLimit = 2.0f;
     private Coroutine coroutine;
+    private int ComboCombination;
+
     void Start()
     {
         index = 0;
         ResetCombination();
-        PlayerRb = Player.GetComponent<Rigidbody2D>();
+
     }
     private void Update()
     {
@@ -90,10 +95,34 @@ public class InvokerMetods : MonoBehaviour
             {
                 _Hide.GenerateCombo();
             }
+            return;
         }
+        else if (IsCorrectCombination(Combination_5, ActiveKey))
+        {
+
+            if (index >= Combination_5.Length)
+            {
+                Attack();
+            }
+            return;
+        }
+
         else
         {
             ResetCombination();
+        }
+    }
+
+    private void Attack()
+    {
+        Collider2D[] hits = Physics2D.OverlapCircleAll(Player.PlayerAtackPoint.transform.position, Player.AttackRadius);
+        foreach(var hit in hits)
+        {
+            if(Utils.LayerMaskUtil.ContainsLayer(layerEnemy, hit.gameObject))
+            {
+                hit.TryGetComponent(out MiniEnemy miniEnemy);
+                miniEnemy.TakeHit(Player.pover);
+            }
         }
     }
 
@@ -121,17 +150,18 @@ public class InvokerMetods : MonoBehaviour
 
     private void Combination1Action()
     {
-        Player.transform.position += new Vector3(0.003f, 0, 0);
+        Player.transform.position += PlayerSpeed;
     }
 
     private void Combination2Action()
     {
-        Player.transform.position -= new Vector3(0.003f, 0, 0);
+        Player.transform.position -= PlayerSpeed;
     }
 
     private void Combination3Action()
     {
-        PlayerRb.AddForce((Player.transform.up * 7 + Player.transform.right * 3), ForceMode2D.Impulse);
+
+        Player.PlayerRb.AddForce((Player.transform.up * 7 + Player.transform.right * 3), ForceMode2D.Impulse);
     }
 
     private void ShowKeys()
@@ -170,7 +200,7 @@ public class InvokerMetods : MonoBehaviour
         HideKeys();
         foreach (var text in Texts)
         {
-            text.color = Color.black;
+            text.color = Color.white;
         }
         index = 0;
         CombinationUsed.Clear();
