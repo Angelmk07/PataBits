@@ -101,22 +101,29 @@ public class InvokerMetods : MonoBehaviour
 
     private void ShowKeys()
     {
-        for (int i = 0; i < Texts.Length && i < CombinationUsed.Count; i++)
+        for (int i = 0; i < Texts.Length; i++)
         {
             Texts[i].text = $"{CombinationUsed[i]}";
         }
     }
-
+    private void HideKeys()
+    {
+        for (int i = 0; i < Texts.Length; i++)
+        {
+            Texts[i].text = null;
+        }
+    }
     private void TrueKey()
     {
-        if (index - 1 < Texts.Length)
+        if (index  < Texts.Length)
         {
-            Texts[index - 1].color = Color.green;
+            Texts[index].color = Color.green;
         }
     }
 
     private void ResetCombination()
     {
+        HideKeys();
         foreach (var text in Texts)
         {
             text.color = Color.white;
