@@ -6,23 +6,31 @@ using UnityEngine;
 
 public class InvokerMetods : MonoBehaviour
 {
+    public delegate void PlayerOperation();
     [SerializeField]
     private TextMeshProUGUI[] Texts;
+    [SerializeField]
+    private GameObject Player;
+    [SerializeField]
+    private Vector3 PlayerSpeed = new Vector3(0.003f, 0, 0);
+
     [SerializeField]
     private KeyCode[] Combination_1;
     [SerializeField]
     private KeyCode[] Combination_2;
     [SerializeField]
     private KeyCode[] Combination_3;
+    private Rigidbody2D PlayerRb;
     private int index;
     private List<KeyCode> CombinationUsed = new List<KeyCode>();
     private float lastKeyTime;
-    private float timeLimit = 2.0f; 
+    private float timeLimit = 2.0f;
+    private Coroutine coroutine;
     void Start()
     {
         index = 0;
         ResetCombination();
-
+        PlayerRb = Player.GetComponent<Rigidbody2D>();
     }
     private void Update()
     {
@@ -52,7 +60,7 @@ public class InvokerMetods : MonoBehaviour
             index++;
             if (index >= Combination_1.Length)
             {
-                Combination1Action();
+                coroutine = StartCoroutine( Move(Combination1Action, 2));
                 StartCoroutine(Correct());
             }
             return;
@@ -63,7 +71,7 @@ public class InvokerMetods : MonoBehaviour
             index++;
             if (index >= Combination_2.Length)
             {
-                Combination2Action();
+                coroutine = StartCoroutine(Move(Combination2Action, 2));
                 StartCoroutine(Correct());
             }
             return;
@@ -98,17 +106,17 @@ public class InvokerMetods : MonoBehaviour
 
     private void Combination1Action()
     {
-        Debug.Log("Executing action for Combination 1");
+        Player.transform.position += new Vector3(0.003f, 0, 0);
     }
 
     private void Combination2Action()
     {
-        Debug.Log("Executing action for Combination 2");
+        Player.transform.position -= new Vector3(0.003f, 0, 0);
     }
-
+    
     private void Combination3Action()
     {
-        Debug.Log("Executing action for Combination 3");
+        PlayerRb.AddForce((Player.transform.up * 7 + Player.transform.right * 3), ForceMode2D.Impulse);
     }
 
     private void ShowKeys()
@@ -126,11 +134,12 @@ public class InvokerMetods : MonoBehaviour
     }
     private void TrueKey(KeyCode key)
     {
-        CombinationUsed.Add(key);
-        if (index  < Texts.Length)
+        if (coroutine != null)
         {
-            Texts[index].color = Color.green;
+            StopCoroutine(coroutine);
+            coroutine = null;
         }
+        CombinationUsed.Add(key);
         ShowKeys();
     }
     private void ResetCombinationOutTime()
@@ -146,17 +155,31 @@ public class InvokerMetods : MonoBehaviour
         HideKeys();
         foreach (var text in Texts)
         {
-            text.color = Color.white;
+            text.color = Color.black;
         }
         index = 0;
         CombinationUsed.Clear();
         lastKeyTime = Time.time;
     }
+    IEnumerator Move(PlayerOperation operation, float duration)
+    {
+        float timeElapsed = 0f;
+        while (timeElapsed < duration)
+        {
+            operation();
+
+            timeElapsed += Time.deltaTime;
+            yield return null; 
+        }
+    }
     private IEnumerator Correct()
     {
-
+        foreach (var text in Texts)
+        {
+            text.color = Color.green;
+        }
         float blinkDuration = 0.2f;
-        int blinkCount = 7;
+        int blinkCount = 4;
         for (int i = 0; i < blinkCount; i++)
         {
             SetSpriteTransparency(0.5f);
