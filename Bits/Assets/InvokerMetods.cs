@@ -22,7 +22,7 @@ public class InvokerMetods : MonoBehaviour
     {
         index = 0;
         ResetCombination();
-        ShowKeys();
+
     }
 
     private void OnEnable()
@@ -41,31 +41,34 @@ public class InvokerMetods : MonoBehaviour
     {
         if (IsCorrectCombination(Combination_1, ActiveKey))
         {
-            TrueKey();
+            TrueKey(ActiveKey);
+            index++;
             if (index >= Combination_1.Length)
             {
-                Combination1Action(); 
-                ResetCombination();
+                Combination1Action();
+                StartCoroutine(Correct());
             }
             return;
         }
         else if (IsCorrectCombination(Combination_2, ActiveKey))
         {
-            TrueKey();
+            TrueKey(ActiveKey);
+            index++;
             if (index >= Combination_2.Length)
             {
-                Combination2Action(); 
-                ResetCombination();
+                Combination2Action();
+                StartCoroutine(Correct());
             }
             return;
         }
         else if (IsCorrectCombination(Combination_3, ActiveKey))
         {
-            TrueKey();
+            TrueKey(ActiveKey);
+            index++;
             if (index >= Combination_3.Length)
             {
                 Combination3Action();
-                ResetCombination();
+                StartCoroutine(Correct());
             }
             return;
         }
@@ -78,7 +81,7 @@ public class InvokerMetods : MonoBehaviour
     {
         if (combination[index] == ActiveKey)
         {
-            index++;
+
             return true;
         }
         return false;
@@ -101,10 +104,9 @@ public class InvokerMetods : MonoBehaviour
 
     private void ShowKeys()
     {
-        for (int i = 0; i < Texts.Length; i++)
-        {
-            Texts[i].text = $"{CombinationUsed[i]}";
-        }
+
+        Texts[index].text = $"{CombinationUsed[index]}";
+        
     }
     private void HideKeys()
     {
@@ -113,12 +115,14 @@ public class InvokerMetods : MonoBehaviour
             Texts[i].text = null;
         }
     }
-    private void TrueKey()
+    private void TrueKey(KeyCode key)
     {
+        CombinationUsed.Add(key);
         if (index  < Texts.Length)
         {
             Texts[index].color = Color.green;
         }
+        ShowKeys();
     }
 
     private void ResetCombination()
@@ -129,5 +133,31 @@ public class InvokerMetods : MonoBehaviour
             text.color = Color.white;
         }
         index = 0;
+    }
+    private IEnumerator Correct()
+    {
+
+        float blinkDuration = 0.2f;
+        int blinkCount = 7;
+        for (int i = 0; i < blinkCount; i++)
+        {
+            SetSpriteTransparency(0.5f);
+            yield return new WaitForSeconds(blinkDuration);
+            SetSpriteTransparency(1f);
+            yield return new WaitForSeconds(blinkDuration);
+            ResetCombination();
+        }
+    }
+
+    private void SetSpriteTransparency(float alpha)
+    {
+        for(int i = 0; i < Texts.Length; i++)
+        {
+            Color newColor = Texts[i].color;
+            newColor.a = alpha;
+            Texts[i].color = newColor;
+        }
+
+        
     }
 }
