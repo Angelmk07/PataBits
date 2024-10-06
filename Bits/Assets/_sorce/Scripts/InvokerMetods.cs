@@ -4,17 +4,14 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class InvokerMetods : MonoBehaviour
+public class InvokerMethods : MonoBehaviour
 {
-    public delegate void PlayerOperation();
-    [SerializeField]
-    private TextMeshProUGUI[] Texts;
-    [SerializeField]
-    private PlayerS Player;
-    [SerializeField]
-    private Vector3 PlayerSpeed = new Vector3(0.003f, 0, 0);
-    [SerializeField]
-    private Invoke _Hide;
+    public delegate void PlayerAction();
+
+    [SerializeField] private TextMeshProUGUI[] texts;
+    [SerializeField] private PlayerS player;
+    [SerializeField] private Vector3 playerSpeed = new Vector3(0.003f, 0, 0);
+    [SerializeField] private Invoke hide;
     [SerializeField]
     private KeyCode[] Combination_1;
     [SerializeField]
@@ -25,21 +22,23 @@ public class InvokerMetods : MonoBehaviour
     private KeyCode[] Combination_4;
     [SerializeField]
     private KeyCode[] Combination_5;
-    [SerializeField]
-    private LayerMask layerEnemy;
-    private int index;
-    private List<KeyCode> CombinationUsed = new List<KeyCode>();
+    private KeyCode[][] combinations;  
+    [SerializeField] private LayerMask enemyLayer;
+
+    private int currentIndex = 0;
+    private List<KeyCode> enteredKeys = new List<KeyCode>();
     private float lastKeyTime;
-    private float timeLimit = 2.0f;
-    private Coroutine coroutine;
-    private int ComboCombination;
+    private const float timeLimit = 2.0f;
+    private Coroutine moveCoroutine;
+    private int comboMultiplier = 1;
+    private KeyCode[] lastCombo;
 
-    void Start()
+    private void Start()
     {
-        index = 0;
+        combinations = new KeyCode[][] { Combination_1, Combination_2, Combination_3, Combination_4, Combination_5 };
         ResetCombination();
-
     }
+
     private void Update()
     {
         if (Time.time - lastKeyTime > timeLimit)
@@ -47,199 +46,200 @@ public class InvokerMetods : MonoBehaviour
             ResetCombination();
         }
     }
+
     private void OnEnable()
     {
-        LisenKeyInputInBit.Pressed += ActiveCombination;
-        LisenKeyInputInBit.TimeOut += ResetCombinationOutTime;
+        LisenKeyInputInBit.Pressed += HandleKeyPress;
+        LisenKeyInputInBit.TimeOut += ResetCombination;
     }
 
     private void OnDisable()
     {
-        LisenKeyInputInBit.Pressed -= ActiveCombination;
-        LisenKeyInputInBit.TimeOut -= ResetCombinationOutTime;
+        LisenKeyInputInBit.Pressed -= HandleKeyPress;
+        LisenKeyInputInBit.TimeOut -= ResetCombination;
     }
 
-    private void ActiveCombination(KeyCode ActiveKey)
+    private void HandleKeyPress(KeyCode keyPressed)
     {
         lastKeyTime = Time.time;
-        if (IsCorrectCombination(Combination_1, ActiveKey))
-        {
-            if (index >= Combination_1.Length)
-            {
-                coroutine = StartCoroutine(Move(Combination1Action, 2));
-            }
-            return;
-        }
-        else if (IsCorrectCombination(Combination_2, ActiveKey))
-        {
 
-            if (index >= Combination_2.Length)
-            {
-                coroutine = StartCoroutine(Move(Combination2Action, 2));
-            }
-            return;
-        }
-        else if (IsCorrectCombination(Combination_3, ActiveKey))
+        for (int i = 0; i < combinations.Length; i++)
         {
-
-            if (index >= Combination_3.Length)
+            if (IsCorrectKeySequence(combinations[i], keyPressed))
             {
-                Combination3Action();
+                if (currentIndex >= combinations[i].Length)
+                {
+                    HandleComboCompletion(combinations[i], i);
+                }
+                return;
             }
-            return;
-        }
-        else if (IsCorrectCombination(Combination_4, ActiveKey))
-        {
-
-            if (index >= Combination_4.Length)
-            {
-                _Hide.GenerateCombo();
-            }
-            return;
-        }
-        else if (IsCorrectCombination(Combination_5, ActiveKey))
-        {
-
-            if (index >= Combination_5.Length)
-            {
-                Attack();
-            }
-            return;
         }
 
+        if (keyPressed == KeyCode.Space && moveCoroutine != null)
+        {
+            StopCoroutine(moveCoroutine);
+            moveCoroutine = null;
+        }
         else
         {
             ResetCombination();
         }
     }
 
-    private void Attack()
+    private bool IsCorrectKeySequence(KeyCode[] combination, KeyCode keyPressed)
     {
-        Collider2D[] hits = Physics2D.OverlapCircleAll(Player.PlayerAtackPoint.transform.position, Player.AttackRadius);
-        foreach(var hit in hits)
+        for (int i = 0; i < enteredKeys.Count; i++)
         {
-            if(Utils.LayerMaskUtil.ContainsLayer(layerEnemy, hit.gameObject))
+            if (enteredKeys[i] != combination[i]) return false;
+        }
+
+        if (combination[currentIndex] == keyPressed)
+        {
+            enteredKeys.Add(keyPressed);
+            UpdateKeyDisplay();
+            currentIndex++;
+
+            if (currentIndex >= combination.Length)
             {
-                hit.TryGetComponent(out MiniEnemy miniEnemy);
-                miniEnemy.TakeHit(Player.pover);
+                StartCoroutine(ShowCorrectSequenceFeedback());
             }
+
+            return true;
+        }
+
+        return false;
+    }
+
+    private void HandleComboCompletion(KeyCode[] combination, int comboIndex)
+    {
+        UpdateComboMultiplier(combination);
+
+        switch (comboIndex)
+        {
+            case 0:
+                moveCoroutine = StartCoroutine(MovePlayer(Combination1Action));
+                break;
+            case 1:
+                moveCoroutine = StartCoroutine(MovePlayer(Combination2Action));
+                break;
+            case 2:
+                Combination3Action();
+                break;
+            case 3:
+                hide.GenerateCombo();
+                break;
+            case 4:
+                PerformAttack();
+                break;
         }
     }
 
-    private bool IsCorrectCombination(KeyCode[] combination, KeyCode ActiveKey)
+    private void UpdateComboMultiplier(KeyCode[] combination)
     {
-        for (int i = 0; i < CombinationUsed.Count; i++)
+        if (lastCombo == combination)
         {
-            if (CombinationUsed[i] != combination[i])
+            comboMultiplier++;
+        }
+        else
+        {
+            comboMultiplier = 1;
+        }
+
+        lastCombo = combination;
+    }
+
+    private void PerformAttack()
+    {
+        Collider2D[] hits = Physics2D.OverlapCircleAll(player.PlayerAtackPoint.transform.position, player.AttackRadius);
+        foreach (var hit in hits)
+        {
+            if (Utils.LayerMaskUtil.ContainsLayer(enemyLayer, hit.gameObject))
             {
-                return false;
+                if (hit.TryGetComponent(out MiniEnemy miniEnemy))
+                {
+                    miniEnemy.TakeHit(player.power * comboMultiplier);
+                }
             }
         }
-        if(combination[index] == ActiveKey)
-        {
-            TrueKey(ActiveKey);
-            index++;
-            if (index >= combination.Length)
-            {
-                StartCoroutine(Correct());
-            }
-            return true;
-        }
-        return false;
     }
 
     private void Combination1Action()
     {
-        Player.transform.position += PlayerSpeed;
+        player.transform.position += playerSpeed * comboMultiplier;
     }
 
     private void Combination2Action()
     {
-        Player.transform.position -= PlayerSpeed;
+        player.transform.position -= playerSpeed * comboMultiplier;
     }
 
     private void Combination3Action()
     {
-
-        Player.PlayerRb.AddForce((Player.transform.up * 7 + Player.transform.right * 3), ForceMode2D.Impulse);
+        player.PlayerRb.AddForce(player.transform.up * 7 * comboMultiplier + player.transform.right * 3 * comboMultiplier, ForceMode2D.Impulse);
     }
 
-    private void ShowKeys()
+    private void UpdateKeyDisplay()
     {
+        texts[currentIndex].text = enteredKeys[currentIndex].ToString();
+    }
 
-        Texts[index].text = $"{CombinationUsed[index]}";
-
-    }
-    private void HideKeys()
-    {
-        for (int i = 0; i < Texts.Length; i++)
-        {
-            Texts[i].text = null;
-        }
-    }
-    private void TrueKey(KeyCode key)
-    {
-        if (coroutine != null)
-        {
-            StopCoroutine(coroutine);
-            coroutine = null;
-        }
-        CombinationUsed.Add(key);
-        ShowKeys();
-    }
-    private void ResetCombinationOutTime()
-    {
-        if (CombinationUsed != null)
-        {
-            ResetCombination();
-        }
-
-    }
     private void ResetCombination()
     {
-        HideKeys();
-        foreach (var text in Texts)
-        {
-            text.color = Color.white;
-        }
-        index = 0;
-        CombinationUsed.Clear();
+        lastCombo = null;
+        ClearKeyDisplay();
+        currentIndex = 0;
+        enteredKeys.Clear();
         lastKeyTime = Time.time;
     }
-    IEnumerator Move(PlayerOperation operation, float duration)
-    {
-        float timeElapsed = 0f;
-        while (timeElapsed < duration)
-        {
-            operation();
 
-            timeElapsed += Time.deltaTime;
+    private void ClearKeyDisplay()
+    {
+        foreach (var text in texts)
+        {
+            text.text = string.Empty;
+            text.color = Color.white;
+        }
+    }
+
+    private IEnumerator MovePlayer(PlayerAction action)
+    {
+        float duration = 2f;
+        float elapsedTime = 0f;
+
+        while (elapsedTime < duration)
+        {
+            action.Invoke();
+            elapsedTime += Time.deltaTime;
             yield return null;
         }
     }
-    private IEnumerator Correct()
+
+    private IEnumerator ShowCorrectSequenceFeedback()
     {
-        foreach (var text in Texts)
+        foreach (var text in texts)
         {
             text.color = Color.green;
         }
+
         float blinkDuration = 0.2f;
         int blinkCount = 4;
+
         for (int i = 0; i < blinkCount; i++)
         {
-            SetSpriteTransparency(0.5f);
+            SetTextTransparency(0.5f);
             yield return new WaitForSeconds(blinkDuration);
-            SetSpriteTransparency(1f);
+            SetTextTransparency(1f);
             yield return new WaitForSeconds(blinkDuration);
         }
     }
-    private void SetSpriteTransparency(float alpha)
+
+    private void SetTextTransparency(float alpha)
     {
-        for (int i = 0; i < Texts.Length; i++)
+        foreach (var text in texts)
         {
-            Color newColor = Texts[i].color;
-            newColor.a = alpha;
-            Texts[i].color = newColor;
+            var color = text.color;
+            color.a = alpha;
+            text.color = color;
         }
     }
 }

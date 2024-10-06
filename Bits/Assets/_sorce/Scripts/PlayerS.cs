@@ -15,7 +15,7 @@ public class PlayerS : MonoBehaviour
     [field: SerializeField]
     public int Medicine { private set; get; }
     [field: SerializeField]
-    public int pover { private set; get; }
+    public int power { private set; get; }
     private void OnEnable()
     {
         MiniEnemy.MiniDead += AddMedicThing;
