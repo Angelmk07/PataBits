@@ -38,6 +38,7 @@ public class PlayerS : MonoBehaviour
         MiniEnemy.MiniDead += AddMedicThing;
         FieldOfView.Spoted += FindedMetod;
         LandingCheck.Landing += LandAnim;
+        Panic.InvisibleLost += HideMech;
     }
 
     private void LandAnim()
@@ -49,6 +50,8 @@ public class PlayerS : MonoBehaviour
     {
         MiniEnemy.MiniDead -= AddMedicThing;
         FieldOfView.Spoted -= FindedMetod;
+        Panic.InvisibleLost -= HideMech;
+
     }
     protected void AddMedicThing()
     {
@@ -60,16 +63,28 @@ public class PlayerS : MonoBehaviour
     }
     public void HideMech()
     {
-        int i ;
         isHide = !isHide;
-        if(_spriteRender.color.a == 0)
+        if (isHide)
         {
-            _spriteRender.color = new Color(_spriteRender.color.r, _spriteRender.color.g, _spriteRender.color.b,Mathf.Lerp(1, 0, TimeHide * Time.deltaTime));
+            StartCoroutine(FadeTo(0, TimeHide)); 
         }
         else
         {
-            _spriteRender.color = new Color(_spriteRender.color.r, _spriteRender.color.g, _spriteRender.color.b, Mathf.Lerp(0, 1, TimeHide * Time.deltaTime));
+            StartCoroutine(FadeTo(1, TimeHide)); 
         }
     }
-    
+    private IEnumerator FadeTo(float targetAlpha, float duration)
+    {
+        float startAlpha = _spriteRender.color.a;
+        float time = 0;
+        while (time < duration)
+        {
+            time += Time.deltaTime;
+            float newAlpha = Mathf.Lerp(startAlpha, targetAlpha, time / duration);
+            _spriteRender.color = new Color(_spriteRender.color.r, _spriteRender.color.g, _spriteRender.color.b, newAlpha);
+            yield return null;
+        }
+        _spriteRender.color = new Color(_spriteRender.color.r, _spriteRender.color.g, _spriteRender.color.b, targetAlpha);
+    }
+
 }

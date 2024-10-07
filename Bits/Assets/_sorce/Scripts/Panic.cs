@@ -4,13 +4,16 @@ using UnityEngine;
 using System;
 using UnityEngine.UI;
 
-public class Invoke : MonoBehaviour
+public class Panic : MonoBehaviour
 {
     [SerializeField]
     private enum Arrow { Up, Down, Left, Right }
 
     [SerializeField]
     private GameObject Show;
+
+    [SerializeField]
+    private Image ShowTime;
 
     [SerializeField]
     private Image[] PoinsImage;
@@ -27,27 +30,30 @@ public class Invoke : MonoBehaviour
     [SerializeField]
     private int currentIndex = 0;
 
-    private GameObject[] InstansArrow = new GameObject[4];
 
     [SerializeField]
     private float maxTime = 5f;
     private float currentTime;
 
-    public Action InvisibleLost; 
+    public static Action InvisibleLost; 
 
-    private void Start()
+    private void Awake()
     {
         currentTime = maxTime;
         GenerateCombo();
+        currentTime = maxTime;
+        ShowTime.fillAmount = 1;
     }
 
     private void Update()
     {
         currentTime -= Time.deltaTime;
+        ShowTime.fillAmount = currentTime/maxTime ;
         if (currentTime <= 0f)
         {
-            InvisibleLost?.Invoke(); 
-            ResetCombo(); 
+            InvisibleLost?.Invoke();
+            resetTimer();
+            Show.SetActive(false);
             return;
         }
         if (Input.GetKeyDown(KeyCode.UpArrow))
@@ -79,7 +85,13 @@ public class Invoke : MonoBehaviour
         }
         inputCombo = new Arrow[4];
         currentIndex = 0;
-        currentTime = maxTime; 
+
+    }
+    private void resetTimer()
+    {
+        ShowTime.fillAmount = 1;
+        currentTime = maxTime;
+
     }
     private void InputArrow(Arrow arrow)
     {
@@ -92,7 +104,7 @@ public class Invoke : MonoBehaviour
                 maxTime -= 0.5f; 
                 if (maxTime < 1f) maxTime = 1f;
                 ResetCombo();
-
+                resetTimer();
 
             }
             else

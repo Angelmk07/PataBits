@@ -41,7 +41,6 @@ public class FieldOfView : MonoBehaviour
 
             Vector3 hitPoint = hit ? hit.point : (Vector3)transform.position + (Vector3)direction * viewDistance;
             points[i + 1] = hitPoint;
-            Debug.DrawLine(transform.position, hitPoint, hit ? Color.red : Color.green);
             if (hit.collider != null)
             {
                 if (Utils.LayerMaskUtil.ContainsLayer(Player, hit.collider.gameObject))
@@ -55,4 +54,20 @@ public class FieldOfView : MonoBehaviour
         points[rayCount + 1] = points[0]; 
         lineRenderer.SetPositions(points);
     }
+    //private void OnDrawGizmos()
+    //{
+    //    float angleStep = viewAngle / rayCount; // Шаг угла между лучами
+    //    Vector3[] points = new Vector3[rayCount + 2]; // Массив для хранения точек (включая начальную точку и замыкание)
+    //    points[0] = transform.position;
+    //    for (int i = 0; i <= rayCount; i++)
+    //    {
+    //        float angle = transform.eulerAngles.z - viewAngle / 2 + angleStep * i; // Вычисляем угол
+    //        Vector2 direction = new Vector2(Mathf.Cos(angle * Mathf.Deg2Rad), Mathf.Sin(angle * Mathf.Deg2Rad)); // Направление луча
+    //        RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, viewDistance, objects); // Проверяем столкновение
+
+    //        Vector3 hitPoint = hit ? hit.point : (Vector3)transform.position + (Vector3)direction * viewDistance;
+    //        points[i + 1] = hitPoint;
+    //        Debug.DrawLine(transform.position, hitPoint, hit ? Color.red : Color.green);
+    //    }
+    //}
 }

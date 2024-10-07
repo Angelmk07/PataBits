@@ -20,7 +20,8 @@ public class LisenKeyInputInBit : MonoBehaviour
     [SerializeField]
     private float Speed =4;
 
-
+    [SerializeField]
+    private PlayerS _player;
     void Start()
     {
         PostProcessVolume.profile.TryGetSettings(out Vignette);
@@ -39,7 +40,7 @@ public class LisenKeyInputInBit : MonoBehaviour
 
     void Update()
     {
-        if (_isListening)
+        if (_isListening&&!_player.isHide)
         {
             if (Time.time >= _nextActionTime + _reactionTime)
             {

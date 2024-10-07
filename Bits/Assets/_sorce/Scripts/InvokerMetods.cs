@@ -10,7 +10,7 @@ public class InvokerMethods : MonoBehaviour
 
     [SerializeField] private TextMeshProUGUI[] texts;
     [SerializeField] private PlayerS player;
-    [SerializeField] private Invoke hide;
+    [SerializeField] private Panic hide;
     [SerializeField]
     private KeyCode[] Combination_1;
     [SerializeField]
