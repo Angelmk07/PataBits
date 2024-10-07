@@ -40,6 +40,13 @@ public class LisenKeyInputInBit : MonoBehaviour
 
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.LeftControl))
+        {
+            _player._spriteR.flipX = !_player._spriteR.flipX;
+        }
+        
+
+        
         if (_isListening&&!_player.isHide)
         {
             if (Time.time >= _nextActionTime + _reactionTime)

@@ -13,6 +13,15 @@ public class PlayerS : MonoBehaviour
     [field: SerializeField]
     public GameObject Player { private set; get; }
     [field: SerializeField]
+    public SpriteRenderer _spriteR { private set; get; }
+
+    [field: SerializeField]
+    public int high { private set; get; } = 7;
+
+    [field: SerializeField]
+    public int forvard { private set; get; } = 3;
+
+    [field: SerializeField]
     public float MoveTime { private set; get; } = 25;
 
     [field: SerializeField]
@@ -20,7 +29,7 @@ public class PlayerS : MonoBehaviour
     [field: SerializeField]
     public int AttackRadius { private set; get; }
     [field: SerializeField]
-    public int Medicine { private set; get; }
+    public int Health { private set; get; }
     [field: SerializeField]
     public bool isHide { private set; get; }
     [field: SerializeField]
@@ -39,7 +48,6 @@ public class PlayerS : MonoBehaviour
     }
     private void OnEnable()
     {
-        MiniEnemy.MiniDead += AddMedicThing;
         FieldOfView.Spoted += FindedMetod;
         LandingCheck.Landing += LandAnim;
         Panic.InvisibleLost += HideMech;
@@ -52,7 +60,6 @@ public class PlayerS : MonoBehaviour
 
     private void OnDisable()
     {
-        MiniEnemy.MiniDead -= AddMedicThing;
         FieldOfView.Spoted -= FindedMetod;
         Panic.InvisibleLost -= HideMech;
 
@@ -61,10 +68,7 @@ public class PlayerS : MonoBehaviour
     {
         Dead?.Invoke();
     }
-    protected void AddMedicThing()
-    {
-        Medicine++;
-    }
+
     protected void FindedMetod()
     {
         Finded = true;
@@ -80,6 +84,14 @@ public class PlayerS : MonoBehaviour
         else
         {
             StartCoroutine(FadeTo(1, TimeHide)); 
+        }
+    }
+    public void TakeHit(int value)
+    {
+        Health -= value;
+        if (Health < 1)
+        {
+            Dead?.Invoke();
         }
     }
     private IEnumerator FadeTo(float targetAlpha, float duration)

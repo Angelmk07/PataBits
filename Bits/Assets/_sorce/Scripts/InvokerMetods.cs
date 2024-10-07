@@ -168,10 +168,10 @@ public class InvokerMethods : MonoBehaviour
         {
             if (Utils.LayerMaskUtil.ContainsLayer(enemyLayer, hit.gameObject))
             {
-                if (hit.TryGetComponent(out MiniEnemy miniEnemy))
+                if (hit.TryGetComponent(out AttackEleveter _Boss))
                 {
-                    miniEnemy.TakeHit(player.power * comboMultiplier);
-                    enteredKeys.Clear();
+                    _Boss.TakeHit(player.power);
+                    player.PlayerAnimator.SetTrigger("Atack");
                 }
             }
         }
@@ -192,7 +192,7 @@ public class InvokerMethods : MonoBehaviour
 
     private void Combination3Action()
     {
-        player.PlayerRb.AddForce(player.transform.up * 7 * comboMultiplier + player.transform.right * 3 * comboMultiplier, ForceMode2D.Impulse);
+        player.PlayerRb.AddForce(player.transform.up * player.high * comboMultiplier + player.transform.right * player.forvard * comboMultiplier, ForceMode2D.Impulse);
         player.PlayerAnimator.SetTrigger("Jump");
     }
 
