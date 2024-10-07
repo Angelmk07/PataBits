@@ -7,7 +7,8 @@ public class Deadzone : MonoBehaviour
 {
     [SerializeField]
     private Image Image;
-
+    [SerializeField]
+    private GameObject EndDead;
     [SerializeField]
     private float speed =0.4f;
     [SerializeField]
@@ -26,9 +27,14 @@ public class Deadzone : MonoBehaviour
     {
         StartFadeImage();
     }
+    private void OnBecameInvisible()
+    {
+        StartFadeImage();
+    }
     void StartFadeImage()
     {
-        Image.color = new Color(Image.color.r, Image.color.g, Image.color.b, alfa +=Mathf.Lerp(0,1,0.005f));
+        Image.color = new Color(Image.color.r, Image.color.g, Image.color.b, 1);
+        EndDead.SetActive(true);
         Time.timeScale = 0;
         
     }

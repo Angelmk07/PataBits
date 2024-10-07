@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.Rendering.PostProcessing;
+using UnityEngine.SceneManagement;
 
 public class LisenKeyInputInBit : MonoBehaviour
 {
@@ -24,6 +25,7 @@ public class LisenKeyInputInBit : MonoBehaviour
     private PlayerS _player;
     void Start()
     {
+        Time.timeScale = 1;
         PostProcessVolume.profile.TryGetSettings(out Vignette);
         _timeForBit = 60f / _musicBMP;
         StartListening();
@@ -43,10 +45,21 @@ public class LisenKeyInputInBit : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.LeftControl))
         {
             _player._spriteR.flipX = !_player._spriteR.flipX;
+            _player.PlayerAtackPointRotation.transform.localScale = new Vector3
+                (
+                -_player.PlayerAtackPoint.transform.localScale.x,
+                _player.PlayerAtackPoint.transform.localScale.y,
+                _player.PlayerAtackPoint.transform.localScale.z
+                );
         }
-        
+        if (Input.GetKeyDown(KeyCode.R)&&_player.dead)
+        {
+            Time.timeScale = 1;
+            int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
+            SceneManager.LoadScene(currentSceneIndex);
+        }
 
-        
+
         if (_isListening&&!_player.isHide)
         {
             if (Time.time >= _nextActionTime + _reactionTime)

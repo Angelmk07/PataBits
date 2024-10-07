@@ -26,12 +26,17 @@ public class PlayerS : MonoBehaviour
 
     [field: SerializeField]
     public GameObject PlayerAtackPoint { private set; get; }
+
+    [field: SerializeField]
+    public GameObject PlayerAtackPointRotation { private set; get; }
     [field: SerializeField]
     public int AttackRadius { private set; get; }
     [field: SerializeField]
     public int Health { private set; get; }
     [field: SerializeField]
     public bool isHide { private set; get; }
+    [field: SerializeField]
+    public bool dead { private set; get; }
     [field: SerializeField]
     public int power { private set; get; }
     [SerializeField]
@@ -55,7 +60,11 @@ public class PlayerS : MonoBehaviour
 
     private void LandAnim()
     {
-        PlayerAnimator.SetTrigger("Landing");
+        if (PlayerAnimator != null)
+        {
+            PlayerAnimator.SetTrigger("Landing");
+        }
+
     }
 
     private void OnDisable()
@@ -91,6 +100,7 @@ public class PlayerS : MonoBehaviour
         Health -= value;
         if (Health < 1)
         {
+            dead = true;
             Dead?.Invoke();
         }
     }

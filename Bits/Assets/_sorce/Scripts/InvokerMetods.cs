@@ -168,7 +168,7 @@ public class InvokerMethods : MonoBehaviour
         {
             if (Utils.LayerMaskUtil.ContainsLayer(enemyLayer, hit.gameObject))
             {
-                if (hit.TryGetComponent(out AttackEleveter _Boss))
+                if (hit.TryGetComponent(out Lives _Boss))
                 {
                     _Boss.TakeHit(player.power);
                     player.PlayerAnimator.SetTrigger("Atack");

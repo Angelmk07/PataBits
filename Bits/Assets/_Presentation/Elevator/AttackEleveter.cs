@@ -4,8 +4,7 @@ using UnityEngine;
 
 public class AttackEleveter : MonoBehaviour
 {
-    [SerializeField]
-    private GameObject Player;
+
     [SerializeField]
     private Animator[] Animator;
     [SerializeField]
@@ -14,11 +13,10 @@ public class AttackEleveter : MonoBehaviour
     private float TimeNextAttack;
     [SerializeField]
     private int Index = 0;
-    [SerializeField]
-    private int Hist = 0;
-    void Start()
+
+    private void Start()
     {
-        Player = GameObject.FindGameObjectWithTag("Player");
+        Time.timeScale = 1;
     }
 
     void Update()
@@ -42,8 +40,5 @@ public class AttackEleveter : MonoBehaviour
             TimeAttack += Time.deltaTime;
         }
     }
-    public void TakeHit(int val)
-    {
-        Hist+= val;
-    }
+
 }
