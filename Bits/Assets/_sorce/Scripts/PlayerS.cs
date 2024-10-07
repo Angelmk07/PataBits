@@ -5,12 +5,16 @@ using UnityEngine;
 
 public class PlayerS : MonoBehaviour
 {
+    public static Action Dead;
     [field: SerializeField]
     public Vector3 playerSpeed { private set; get; } = new Vector3(0.03f, 0, 0);
     [field: SerializeField]
     public Rigidbody2D PlayerRb { private set; get; }
     [field: SerializeField]
     public GameObject Player { private set; get; }
+    [field: SerializeField]
+    public float MoveTime { private set; get; } = 25;
+
     [field: SerializeField]
     public GameObject PlayerAtackPoint { private set; get; }
     [field: SerializeField]
@@ -53,6 +57,10 @@ public class PlayerS : MonoBehaviour
         Panic.InvisibleLost -= HideMech;
 
     }
+    private void OnBecameInvisible()
+    {
+        Dead?.Invoke();
+    }
     protected void AddMedicThing()
     {
         Medicine++;
@@ -60,6 +68,7 @@ public class PlayerS : MonoBehaviour
     protected void FindedMetod()
     {
         Finded = true;
+        Dead?.Invoke();
     }
     public void HideMech()
     {

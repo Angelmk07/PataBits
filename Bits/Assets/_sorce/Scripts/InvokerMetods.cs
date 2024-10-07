@@ -27,6 +27,7 @@ public class InvokerMethods : MonoBehaviour
     private int currentIndex = 0;
     [SerializeField]
     private int MaxLenthCombination = 4;
+    [SerializeField]
     private List<KeyCode> enteredKeys = new List<KeyCode>();
     private float lastKeyTime;
     private const float timeLimit = 2.0f;
@@ -63,8 +64,10 @@ public class InvokerMethods : MonoBehaviour
     private void HandleKeyPress(KeyCode keyPressed)
     {
         lastKeyTime = Time.time;
-        if(enteredKeys.Count > MaxLenthCombination)
+        if (enteredKeys.Count+1 > MaxLenthCombination)
         {
+            enteredKeys.Clear();
+            currentIndex = 0;
             return;
         }
         for (int i = 0; i < combinations.Length; i++)
@@ -106,6 +109,7 @@ public class InvokerMethods : MonoBehaviour
             if (currentIndex >= combination.Length)
             {
                 StartCoroutine(ShowCorrectSequenceFeedback());
+
             }
 
             return true;
@@ -167,6 +171,7 @@ public class InvokerMethods : MonoBehaviour
                 if (hit.TryGetComponent(out MiniEnemy miniEnemy))
                 {
                     miniEnemy.TakeHit(player.power * comboMultiplier);
+                    enteredKeys.Clear();
                 }
             }
         }
@@ -174,13 +179,13 @@ public class InvokerMethods : MonoBehaviour
 
     private void Combination1Action()
     {
-        player.transform.position += player.playerSpeed * comboMultiplier;
+        player.transform.position += player.playerSpeed * comboMultiplier * Time.deltaTime;
         player.PlayerAnimator.SetBool("Walk",true);
     }
 
     private void Combination2Action()
     {
-        player.transform.position -= player.playerSpeed * comboMultiplier;
+        player.transform.position -= player.playerSpeed * comboMultiplier*Time.deltaTime;
         player.PlayerAnimator.SetBool("WalkBehind", true);
 
     }
@@ -217,7 +222,7 @@ public class InvokerMethods : MonoBehaviour
 
     private IEnumerator MovePlayer(PlayerAction action)
     {
-        float duration = 25f;
+        float duration =(float) player.MoveTime;
         float elapsedTime = 0f;
 
         while (elapsedTime < duration)
@@ -236,6 +241,7 @@ public class InvokerMethods : MonoBehaviour
     }
     private IEnumerator ShowCorrectSequenceFeedback()
     {
+
         foreach (var text in texts)
         {
             text.color = Color.green;

@@ -12,8 +12,7 @@ public class FieldOfView : MonoBehaviour
 
     [SerializeField]
     private LayerMask Player;
-    [SerializeField]
-    private LayerMask objects;
+    
 
     private Mesh mesh;
     private MeshFilter meshFilter;
@@ -48,7 +47,7 @@ public class FieldOfView : MonoBehaviour
         {
             float angle = transform.eulerAngles.z - viewAngle / 2 + angleStep * i; 
             Vector2 direction = new Vector2(Mathf.Cos(angle * Mathf.Deg2Rad), Mathf.Sin(angle * Mathf.Deg2Rad)); 
-            RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, viewDistance, objects); 
+            RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, viewDistance); 
 
             Vector3 hitPoint = hit ? hit.point : (Vector3)transform.position + (Vector3)direction * viewDistance;
             Debug.DrawLine(transform.position, hitPoint, hit ? Color.red : Color.green);

@@ -5,6 +5,8 @@ using UnityEngine;
 public class SavePoint : MonoBehaviour
 {
     PlayerS player;
+    [SerializeField]
+    LayerMask LayerMask;
     private void Awake()
     {
         if (PlayerPrefs.GetInt("HaveSave") == 1)
@@ -13,7 +15,14 @@ public class SavePoint : MonoBehaviour
         }
 
     }
-    void SetPoint(float x)
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if(Utils.LayerMaskUtil.ContainsLayer(LayerMask, collision.gameObject))
+        {
+            SetPoint();
+        }
+    }
+    void SetPoint()
     {
         PlayerPrefs.SetInt("HaveSave", 1);
         PlayerPrefs.SetFloat("PointX", player.Player.transform.position.x);

@@ -96,7 +96,17 @@ public class Panic : MonoBehaviour
     private void InputArrow(Arrow arrow)
     {
         inputCombo[currentIndex] = arrow;
-        currentIndex++;
+        if (!CompareArrows(inputCombo[currentIndex], currentCombo[currentIndex]))
+        {
+            ResetCombo();
+
+        }
+        else
+        {
+            currentIndex++;
+        }
+
+
         if (currentIndex == 4)
         {
             if (CompareCombos(currentCombo, inputCombo))
@@ -105,7 +115,6 @@ public class Panic : MonoBehaviour
                 if (maxTime < 1f) maxTime = 1f;
                 ResetCombo();
                 resetTimer();
-
             }
             else
             {
@@ -115,8 +124,8 @@ public class Panic : MonoBehaviour
     }
     private void ResetCombo()
     {
-        currentIndex = 0;
         GenerateCombo();
+        currentIndex = 0;
     }
     private bool CompareCombos(Arrow[] combo1, Arrow[] combo2)
     {
@@ -129,5 +138,17 @@ public class Panic : MonoBehaviour
             }
         }
         return true;
+    }
+    private bool CompareArrows(Arrow Arrow1, Arrow Arrow2)
+    {
+        if(Arrow1 != Arrow2)
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+
     }
 }
