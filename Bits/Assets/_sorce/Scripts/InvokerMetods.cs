@@ -10,7 +10,6 @@ public class InvokerMethods : MonoBehaviour
 
     [SerializeField] private TextMeshProUGUI[] texts;
     [SerializeField] private PlayerS player;
-    [SerializeField] private Vector3 playerSpeed = new Vector3(0.003f, 0, 0);
     [SerializeField] private Invoke hide;
     [SerializeField]
     private KeyCode[] Combination_1;
@@ -77,8 +76,8 @@ public class InvokerMethods : MonoBehaviour
 
         if (keyPressed == KeyCode.Space && moveCoroutine != null)
         {
-            StopCoroutine(moveCoroutine);
-            moveCoroutine = null;
+
+            StopWalksCorutine();
         }
         else
         {
@@ -127,6 +126,7 @@ public class InvokerMethods : MonoBehaviour
                 break;
             case 3:
                 hide.GenerateCombo();
+                player.HideMech();
                 break;
             case 4:
                 PerformAttack();
@@ -165,22 +165,27 @@ public class InvokerMethods : MonoBehaviour
 
     private void Combination1Action()
     {
-        player.transform.position += playerSpeed * comboMultiplier;
+        player.transform.position += player.playerSpeed * comboMultiplier;
+        player.PlayerAnimator.SetBool("Walk",true);
     }
 
     private void Combination2Action()
     {
-        player.transform.position -= playerSpeed * comboMultiplier;
+        player.transform.position -= player.playerSpeed * comboMultiplier;
+        player.PlayerAnimator.SetBool("WalkBehind", true);
+
     }
 
     private void Combination3Action()
     {
         player.PlayerRb.AddForce(player.transform.up * 7 * comboMultiplier + player.transform.right * 3 * comboMultiplier, ForceMode2D.Impulse);
+        player.PlayerAnimator.SetTrigger("Jump");
     }
 
     private void UpdateKeyDisplay()
     {
         texts[currentIndex].text = enteredKeys[currentIndex].ToString();
+
     }
 
     private void ResetCombination()
@@ -203,7 +208,7 @@ public class InvokerMethods : MonoBehaviour
 
     private IEnumerator MovePlayer(PlayerAction action)
     {
-        float duration = 2f;
+        float duration = 25f;
         float elapsedTime = 0f;
 
         while (elapsedTime < duration)
@@ -212,8 +217,14 @@ public class InvokerMethods : MonoBehaviour
             elapsedTime += Time.deltaTime;
             yield return null;
         }
+        StopWalksCorutine();
     }
-
+    private void StopWalksCorutine()
+    {
+        StopCoroutine(moveCoroutine);
+        player.PlayerAnimator.SetBool("Walk", false);
+        player.PlayerAnimator.SetBool("WalkBehind", false);
+    }
     private IEnumerator ShowCorrectSequenceFeedback()
     {
         foreach (var text in texts)

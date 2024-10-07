@@ -1,14 +1,19 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class FieldOfView : MonoBehaviour
 {
+    static public Action Spoted;
     public float viewAngle = 90f; // Угол обзора
     public float viewDistance = 5f; // Дальность видимости
     public int rayCount = 30; // Количество лучей
     private LineRenderer lineRenderer; // Компонент LineRenderer
-
+    [SerializeField]
+    private LayerMask Player;
+    [SerializeField]
+    private LayerMask objects;
     void Start()
     {
         lineRenderer = gameObject.AddComponent<LineRenderer>();
@@ -16,8 +21,8 @@ public class FieldOfView : MonoBehaviour
         lineRenderer.startWidth = 0.1f; // Ширина линии
         lineRenderer.endWidth = 0.1f; // Ширина линии
         lineRenderer.material = new Material(Shader.Find("Sprites/Default")); // Устанавливаем материал
-        lineRenderer.startColor = Color.white; // Начальный цвет
-        lineRenderer.endColor = Color.white; // Конечный цвет
+        lineRenderer.startColor = Color.red; // Начальный цвет
+        lineRenderer.endColor = Color.red; // Конечный цвет
     }
     void Update()
     {
@@ -32,10 +37,20 @@ public class FieldOfView : MonoBehaviour
         {
             float angle = transform.eulerAngles.z - viewAngle / 2 + angleStep * i; // Вычисляем угол
             Vector2 direction = new Vector2(Mathf.Cos(angle * Mathf.Deg2Rad), Mathf.Sin(angle * Mathf.Deg2Rad)); // Направление луча
-            RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, viewDistance); // Проверяем столкновение
+            RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, viewDistance, objects); // Проверяем столкновение
+
             Vector3 hitPoint = hit ? hit.point : (Vector3)transform.position + (Vector3)direction * viewDistance;
             points[i + 1] = hitPoint;
             Debug.DrawLine(transform.position, hitPoint, hit ? Color.red : Color.green);
+            if (hit.collider != null)
+            {
+                if (Utils.LayerMaskUtil.ContainsLayer(Player, hit.collider.gameObject))
+                {
+                    Spoted?.Invoke();
+                }
+
+            }
+
         }
         points[rayCount + 1] = points[0]; 
         lineRenderer.SetPositions(points);
