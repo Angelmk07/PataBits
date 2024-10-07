@@ -10,13 +10,15 @@ public class AttackEleveter : MonoBehaviour
     [SerializeField]
     private GameObject Player;
     [SerializeField]
-    private Animator Animator;
+    private Animator[] Animator;
     [SerializeField]
     private float TimeAttack;
     [SerializeField]
     private float TimeNextAttack;
     [SerializeField]
     private int ValueDanger = 0;
+    [SerializeField]
+    private int Index = 0;
 
     void Start()
     {
@@ -37,15 +39,15 @@ public class AttackEleveter : MonoBehaviour
                 TimeAttack += Time.deltaTime;
                 if (TimeAttack >= TimeNextAttack + 1.5f)
                 {
-                    transform.position = new Vector3(danger.transform.position.x, transform.position.y);
-                    Animator.SetBool("Attack", true);
+                    Index = Random.Range(0, Animator.Length);
+                    Animator[Index].SetBool("Attack", true);
                     TimeAttack = 0;
                     ValueDanger = 0;
                     Destroy(danger);
                 }
                 else
                 {
-                    Animator.SetBool("Attack", false);
+                    Animator[Index].SetBool("Attack", false);
                 }
             }
         }
