@@ -25,6 +25,8 @@ public class InvokerMethods : MonoBehaviour
     [SerializeField] private LayerMask enemyLayer;
 
     private int currentIndex = 0;
+    [SerializeField]
+    private int MaxLenthCombination = 4;
     private List<KeyCode> enteredKeys = new List<KeyCode>();
     private float lastKeyTime;
     private const float timeLimit = 2.0f;
@@ -61,7 +63,10 @@ public class InvokerMethods : MonoBehaviour
     private void HandleKeyPress(KeyCode keyPressed)
     {
         lastKeyTime = Time.time;
-
+        if(enteredKeys.Count > MaxLenthCombination)
+        {
+            return;
+        }
         for (int i = 0; i < combinations.Length; i++)
         {
             if (IsCorrectKeySequence(combinations[i], keyPressed))
@@ -112,7 +117,10 @@ public class InvokerMethods : MonoBehaviour
     private void HandleComboCompletion(KeyCode[] combination, int comboIndex)
     {
         UpdateComboMultiplier(combination);
-
+        if(moveCoroutine!= null)
+        {
+            StopWalksCorutine();
+        }
         switch (comboIndex)
         {
             case 0:
@@ -132,6 +140,7 @@ public class InvokerMethods : MonoBehaviour
                 PerformAttack();
                 break;
         }
+
     }
 
     private void UpdateComboMultiplier(KeyCode[] combination)
