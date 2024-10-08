@@ -2837,6 +2837,16 @@ PrefabInstance:
       propertyPath: player
       value: 
       objectReference: {fileID: 386850721}
+    - target: {fileID: 3662982395492171154, guid: 574f0cef6315f2f4e8e5e73a886bd11d, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -506
+      objectReference: {fileID: 0}
+    - target: {fileID: 4060178714229469427, guid: 574f0cef6315f2f4e8e5e73a886bd11d, type: 3}
+      propertyPath: m_text
+      value: "QQQR - Move right, AAAR -Move left, QWAS - Hide, QWAS - Attack, RRRR-
+        Jump,\u2191\u2193\u2190\u2192  for Arrows, Ctrl orientation, E - interact,
+        Space - Stop\t"
+      objectReference: {fileID: 0}
     - target: {fileID: 5327287998043896788, guid: 574f0cef6315f2f4e8e5e73a886bd11d, type: 3}
       propertyPath: m_Name
       value: Lisen
