@@ -81,6 +81,7 @@ public class PlayerS : MonoBehaviour
     protected void FindedMetod()
     {
         Finded = true;
+        dead = true;
         Dead?.Invoke();
     }
     public void HideMech()

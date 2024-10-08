@@ -163,6 +163,7 @@ public class InvokerMethods : MonoBehaviour
 
     private void PerformAttack()
     {
+        player.PlayerAnimator.SetTrigger("Atack");
         Collider2D[] hits = Physics2D.OverlapCircleAll(player.PlayerAtackPoint.transform.position, player.AttackRadius);
         foreach (var hit in hits)
         {
@@ -171,7 +172,7 @@ public class InvokerMethods : MonoBehaviour
                 if (hit.TryGetComponent(out Lives _Boss))
                 {
                     _Boss.TakeHit(player.power);
-                    player.PlayerAnimator.SetTrigger("Atack");
+
                 }
             }
         }
