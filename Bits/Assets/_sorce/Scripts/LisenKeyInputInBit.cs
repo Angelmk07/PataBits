@@ -10,6 +10,7 @@ public class LisenKeyInputInBit : MonoBehaviour
 
     [SerializeField] private float _musicBMP = 90f;
     [SerializeField] private float _reactionTime = 0.2f;
+    [SerializeField] private float _preReactionTime = 0.2f;
 
     private float _timeForBit;
     private float _nextActionTime;
@@ -19,25 +20,26 @@ public class LisenKeyInputInBit : MonoBehaviour
     private PostProcessVolume PostProcessVolume;
     private Vignette Vignette;
     [SerializeField]
-    private float Speed =4;
+    private float Speed = 8f; 
 
     [SerializeField]
     private PlayerS _player;
+
     void Start()
     {
         Time.timeScale = 1;
         PostProcessVolume.profile.TryGetSettings(out Vignette);
-        _timeForBit = 60f / _musicBMP;
+        _timeForBit = 60f / _musicBMP; 
         StartListening();
-        _canPressKey = true;
+        _canPressKey = false; 
         Vignette.intensity.value = 0.0f;
     }
 
     void StartListening()
     {
         _isListening = true;
-        _nextActionTime = Time.time + _timeForBit;
-        Vignette.intensity.value = 0;
+        _nextActionTime = Time.time + _timeForBit; 
+        Vignette.intensity.value = 0.0f; 
     }
 
     void Update()
@@ -46,55 +48,48 @@ public class LisenKeyInputInBit : MonoBehaviour
         {
             _player._spriteR.flipX = !_player._spriteR.flipX;
             _player.PlayerAtackPointRotation.transform.localScale = new Vector3
-                (
+            (
                 -_player.PlayerAtackPoint.transform.localScale.x,
                 _player.PlayerAtackPoint.transform.localScale.y,
                 _player.PlayerAtackPoint.transform.localScale.z
-                );
-        }
-        if (Input.GetKeyDown(KeyCode.R)&&_player.dead)
+            );
+        }  
+        if (Input.GetKeyDown(KeyCode.R) && _player.dead)
         {
             Time.timeScale = 1;
             int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
             SceneManager.LoadScene(currentSceneIndex);
         }
-
-
-        if (_isListening&&!_player.isHide)
+        if (_isListening && !_player.isHide)
         {
-            if (Time.time >= _nextActionTime + _reactionTime)
+            if (Time.time >= _nextActionTime -_preReactionTime)
             {
-                TimeOut?.Invoke();
-                StartListening();
-                _canPressKey = false;
-                Vignette.intensity.value = 0.0f;
-            }
-            else
-            {
-                if (Time.time >= _nextActionTime - _reactionTime)
+                Vignette.intensity.value = Mathf.Lerp(Vignette.intensity.value, 0.5f, Time.deltaTime * Speed); 
+                _canPressKey = true;
+                if (Time.time >= _nextActionTime + _reactionTime)
                 {
-                    _canPressKey = true;
-                    Vignette.intensity.value = 0.5f;
+                    TimeOut?.Invoke();
+                    StartListening();
+                    _canPressKey = false;
+                    Vignette.intensity.value = 0.0f;
                 }
-
-                if (_canPressKey)
+            }
+            if (_canPressKey)
+            {
+                Vignette.intensity.value = Mathf.Lerp(Vignette.intensity.value, 0.5f, Time.deltaTime * Speed); 
+                if (!string.IsNullOrEmpty(Input.inputString))
                 {
-                    Vignette.intensity.value = 0.5f;
-                    if (!string.IsNullOrEmpty(Input.inputString) )
+                    foreach (KeyCode keyCode in Enum.GetValues(typeof(KeyCode)))
                     {
-                        foreach (KeyCode keyCode in Enum.GetValues(typeof(KeyCode)))
+                        if (Input.GetKeyDown(keyCode))
                         {
-                            if (Input.GetKeyDown(keyCode))
-                            {
-                                Pressed?.Invoke(keyCode);
-                                _canPressKey = false;
-                                StartListening();
-                                break;
-                            }
+                            Pressed?.Invoke(keyCode); 
+                            _canPressKey = false;
+                            StartListening();
+                            break;
                         }
                     }
                 }
-
             }
         }
     }

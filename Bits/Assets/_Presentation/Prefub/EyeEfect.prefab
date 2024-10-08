@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 3485979696205556275}
   - component: {fileID: 1279948977432641897}
   m_Layer: 0
-  m_Name: BushEffect
+  m_Name: EyeEfect
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

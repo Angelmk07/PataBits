@@ -72,6 +72,13 @@ public class Panic : MonoBehaviour
         {
             InputArrow(Arrow.Right);
         }
+        if(Show.active == true&&Input.GetKeyDown(KeyCode.Space))
+        {
+            InvisibleLost?.Invoke();
+            resetTimer();
+            Show.SetActive(false);
+            return;
+        }
     }
     public void GenerateCombo()
     {
