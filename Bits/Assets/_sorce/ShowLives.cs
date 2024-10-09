@@ -10,6 +10,7 @@ public class ShowLives : MonoBehaviour
     int lvl = 0;
     [SerializeField]
     Sprite[] sprits;
+    [SerializeField]
     SpriteRenderer sprit;
     private void OnEnable()
     {

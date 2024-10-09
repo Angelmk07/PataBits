@@ -24,7 +24,7 @@ public class LisenKeyInputInBit : MonoBehaviour
 
     [SerializeField]
     private PlayerS _player;
-
+    private int directionIndex=1;
     void Start()
     {
         Time.timeScale = 1;
@@ -49,7 +49,7 @@ public class LisenKeyInputInBit : MonoBehaviour
             _player._spriteR.flipX = !_player._spriteR.flipX;
             _player.PlayerAtackPointRotation.transform.localScale = new Vector3
             (
-                -_player.PlayerAtackPoint.transform.localScale.x,
+                directionIndex*=-1,
                 _player.PlayerAtackPoint.transform.localScale.y,
                 _player.PlayerAtackPoint.transform.localScale.z
             );
