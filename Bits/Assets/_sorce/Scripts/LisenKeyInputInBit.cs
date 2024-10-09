@@ -34,9 +34,9 @@ public class LisenKeyInputInBit : MonoBehaviour
     {
         Time.timeScale = 1;
         PostProcessVolume.profile.TryGetSettings(out Vignette);
-        _timeForBit = 60f / _musicBMP; // Расчет времени на один бит
+        _timeForBit = 60f / _musicBMP; 
 
-        _startTime = Time.time; // Запоминаем время старта
+        _startTime = Time.time; 
         _isListening = true;
         _canPressKey = false;
 
@@ -68,7 +68,6 @@ public class LisenKeyInputInBit : MonoBehaviour
             float currentTime = Time.time;
             float nextBeatTime = _startTime + _timeForBit * _beatCount;
 
-            // Проверяем, приближаемся ли мы к следующему биту
             if (currentTime >= nextBeatTime - 2 * _preReactionTime)
             {
                 _canPressKey = true;
@@ -76,12 +75,12 @@ public class LisenKeyInputInBit : MonoBehaviour
 
             if (currentTime >= nextBeatTime - _preReactionTime)
             {
-                Vignette.intensity.value = 0.5f; // Виньетка увеличивается на бит
+                Vignette.intensity.value = 0.5f;
 
                 if (currentTime >= nextBeatTime + _reactionTime)
                 {
                     TimeOut?.Invoke();
-                    _beatCount++;  // Увеличиваем счетчик битов, чтобы рассчитать следующее событие
+                    _beatCount++; 
                     _canPressKey = false;
                     Vignette.intensity.value = 0.0f;
                 }
@@ -98,7 +97,7 @@ public class LisenKeyInputInBit : MonoBehaviour
                         {
                             Pressed?.Invoke(keyCode);
                             _canPressKey = false;
-                            _beatCount++; // После нажатия клавиши увеличиваем счетчик битов
+                            _beatCount++; 
                             break;
                         }
                     }
