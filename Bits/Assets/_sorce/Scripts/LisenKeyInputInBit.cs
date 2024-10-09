@@ -13,33 +13,34 @@ public class LisenKeyInputInBit : MonoBehaviour
     [SerializeField] private float _preReactionTime = 0.2f;
 
     private float _timeForBit;
-    private float _nextActionTime;
+    private float _startTime;   // Абсолютное время старта для расчета следующего такта
+    private int _beatCount = 0; // Количество прошедших битов
+
     private bool _isListening;
     private bool _canPressKey;
+
     [SerializeField]
     private PostProcessVolume PostProcessVolume;
     private Vignette Vignette;
+
     [SerializeField]
-    private float Speed = 8f; 
+    private float Speed = 8f;
 
     [SerializeField]
     private PlayerS _player;
-    private int directionIndex=1;
+    private int directionIndex = 1;
+
     void Start()
     {
         Time.timeScale = 1;
         PostProcessVolume.profile.TryGetSettings(out Vignette);
-        _timeForBit = 60f / _musicBMP; 
-        StartListening();
-        _canPressKey = false; 
-        Vignette.intensity.value = 0.0f;
-    }
+        _timeForBit = 60f / _musicBMP; // Расчет времени на один бит
 
-    void StartListening()
-    {
+        _startTime = Time.time; // Запоминаем время старта
         _isListening = true;
-        _nextActionTime = Time.time + _timeForBit; 
-        Vignette.intensity.value = 0.0f; 
+        _canPressKey = false;
+
+        Vignette.intensity.value = 0.0f;
     }
 
     void Update()
@@ -49,43 +50,55 @@ public class LisenKeyInputInBit : MonoBehaviour
             _player._spriteR.flipX = !_player._spriteR.flipX;
             _player.PlayerAtackPointRotation.transform.localScale = new Vector3
             (
-                directionIndex*=-1,
+                directionIndex *= -1,
                 _player.PlayerAtackPoint.transform.localScale.y,
                 _player.PlayerAtackPoint.transform.localScale.z
             );
-        }  
+        }
+
         if (Input.GetKeyDown(KeyCode.R) && _player.dead)
         {
             Time.timeScale = 1;
             int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
             SceneManager.LoadScene(currentSceneIndex);
         }
+
         if (_isListening && !_player.isHide)
         {
-            if (Time.time >= _nextActionTime -_preReactionTime)
+            float currentTime = Time.time;
+            float nextBeatTime = _startTime + _timeForBit * _beatCount;
+
+            // Проверяем, приближаемся ли мы к следующему биту
+            if (currentTime >= nextBeatTime - 2 * _preReactionTime)
             {
-                Vignette.intensity.value = Mathf.Lerp(Vignette.intensity.value, 0.5f, Time.deltaTime * Speed); 
                 _canPressKey = true;
-                if (Time.time >= _nextActionTime + _reactionTime)
+            }
+
+            if (currentTime >= nextBeatTime - _preReactionTime)
+            {
+                Vignette.intensity.value = 0.5f; // Виньетка увеличивается на бит
+
+                if (currentTime >= nextBeatTime + _reactionTime)
                 {
                     TimeOut?.Invoke();
-                    StartListening();
+                    _beatCount++;  // Увеличиваем счетчик битов, чтобы рассчитать следующее событие
                     _canPressKey = false;
                     Vignette.intensity.value = 0.0f;
                 }
             }
+
             if (_canPressKey)
             {
-                Vignette.intensity.value = Mathf.Lerp(Vignette.intensity.value, 0.5f, Time.deltaTime * Speed); 
+                Vignette.intensity.value = Mathf.Lerp(Vignette.intensity.value, 0.5f, Time.deltaTime * Speed);
                 if (!string.IsNullOrEmpty(Input.inputString))
                 {
                     foreach (KeyCode keyCode in Enum.GetValues(typeof(KeyCode)))
                     {
                         if (Input.GetKeyDown(keyCode))
                         {
-                            Pressed?.Invoke(keyCode); 
+                            Pressed?.Invoke(keyCode);
                             _canPressKey = false;
-                            StartListening();
+                            _beatCount++; // После нажатия клавиши увеличиваем счетчик битов
                             break;
                         }
                     }

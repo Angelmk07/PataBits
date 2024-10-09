@@ -16,6 +16,6 @@ public class HitShow : MonoBehaviour
     }
     void hitanim()
     {
-        animator.SetTrigger("isHit");
+        animator.SetTrigger("Hit");
     }
 }
