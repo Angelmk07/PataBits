@@ -22,12 +22,13 @@ public class ShowLives : MonoBehaviour
     }
     private void addlvl()
     {
-        sprit.sprite = sprits[lvl];
-        lvl++;
-        if (lvl > 9)
+        if (lvl >= sprits.Length)
         {
             win?.Invoke();
             SceneManager.LoadScene("End");
+            return;
         }
+        sprit.sprite = sprits[lvl];
+        lvl++;
     }
 }

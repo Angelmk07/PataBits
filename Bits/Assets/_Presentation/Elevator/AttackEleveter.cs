@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class AttackEleveter : MonoBehaviour
@@ -9,14 +10,31 @@ public class AttackEleveter : MonoBehaviour
     private Animator[] Animator;
 
     [SerializeField]
-    private AnimationClip[] AnimationClip;
+    private GameObject[] PointForAlert;
+
+    [SerializeField]
+    private AnimationClip[] _animationClip;
+
+    [SerializeField]
+    private GameObject Alert;
+
+    [SerializeField]
+    private TextMeshProUGUI AlertTime;
 
     [SerializeField]
     private float TimeAttack;
+
     [SerializeField]
     private float TimeNextAttack;
+
     [SerializeField]
     private int Index = 0;
+
+    [SerializeField]
+    private float TimePreHitFix = 8;
+
+    private float TimePreHit = 0;
+
     private void Start()
     {
         Time.timeScale = 1;
@@ -32,7 +50,9 @@ public class AttackEleveter : MonoBehaviour
                 Index = Random.Range(0, Animator.Length);
                 Animator[Index].SetBool("Attack", true);
                 TimeAttack = 0;
-                TimeNextAttack = AnimationClip[Index].length;
+                TimeNextAttack = _animationClip[Index].length;
+                Alert.transform.position = PointForAlert[Index].transform.position;
+                TimePreHit = 8;
             }
             else
             {
@@ -43,6 +63,7 @@ public class AttackEleveter : MonoBehaviour
         {
             TimeAttack += Time.deltaTime;
         }
+        AlertTime.text = $"{Mathf.RoundToInt(TimePreHit-=Time.deltaTime)}";
     }
 
 }

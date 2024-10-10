@@ -13,11 +13,12 @@ public class LisenKeyInputInBit : MonoBehaviour
     [SerializeField] private float _preReactionTime = 0.2f;
 
     private float _timeForBit;
-    private float _startTime;   // Абсолютное время старта для расчета следующего такта
-    private int _beatCount = 0; // Количество прошедших битов
+    private float _startTime;
+    private int _beatCount = 0;
 
     private bool _isListening;
     private bool _canPressKey;
+    private bool _isVignetteActive = false;  
 
     [SerializeField]
     private PostProcessVolume PostProcessVolume;
@@ -34,9 +35,9 @@ public class LisenKeyInputInBit : MonoBehaviour
     {
         Time.timeScale = 1;
         PostProcessVolume.profile.TryGetSettings(out Vignette);
-        _timeForBit = 60f / _musicBMP; 
+        _timeForBit = 60f / _musicBMP;
 
-        _startTime = Time.time; 
+        _startTime = Time.time;
         _isListening = true;
         _canPressKey = false;
 
@@ -75,20 +76,18 @@ public class LisenKeyInputInBit : MonoBehaviour
 
             if (currentTime >= nextBeatTime - _preReactionTime)
             {
-                Vignette.intensity.value = 0.5f;
-
-                if (currentTime >= nextBeatTime + _reactionTime)
-                {
-                    TimeOut?.Invoke();
-                    _beatCount++; 
-                    _canPressKey = false;
-                    Vignette.intensity.value = 0.0f;
-                }
+                _isVignetteActive = true; 
+                Vignette.intensity.value = Mathf.Lerp(Vignette.intensity.value, 0.5f, Time.deltaTime * Speed);
             }
-
+            if (currentTime >= nextBeatTime + _reactionTime)
+            {
+                TimeOut?.Invoke();
+                _beatCount++;
+                _canPressKey = false;
+                _isVignetteActive = false;  
+            }
             if (_canPressKey)
             {
-                Vignette.intensity.value = Mathf.Lerp(Vignette.intensity.value, 0.5f, Time.deltaTime * Speed);
                 if (!string.IsNullOrEmpty(Input.inputString))
                 {
                     foreach (KeyCode keyCode in Enum.GetValues(typeof(KeyCode)))
@@ -97,12 +96,17 @@ public class LisenKeyInputInBit : MonoBehaviour
                         {
                             Pressed?.Invoke(keyCode);
                             _canPressKey = false;
-                            _beatCount++; 
+                            _beatCount++;
+                            _isVignetteActive = false; 
                             break;
                         }
                     }
                 }
             }
+        }
+        if (!_isVignetteActive)
+        {
+            Vignette.intensity.value = Mathf.Lerp(Vignette.intensity.value, 0.0f, Time.deltaTime * Speed);
         }
     }
 }

@@ -3318,7 +3318,11 @@ PrefabInstance:
       objectReference: {fileID: 386850721}
     - target: {fileID: 5611284470111699537, guid: 574f0cef6315f2f4e8e5e73a886bd11d, type: 3}
       propertyPath: _reactionTime
-      value: 0.35
+      value: 0.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 5611284470111699537, guid: 574f0cef6315f2f4e8e5e73a886bd11d, type: 3}
+      propertyPath: _preReactionTime
+      value: 0.2
       objectReference: {fileID: 0}
     - target: {fileID: 5611284470111699537, guid: 574f0cef6315f2f4e8e5e73a886bd11d, type: 3}
       propertyPath: PostProcessVolume
