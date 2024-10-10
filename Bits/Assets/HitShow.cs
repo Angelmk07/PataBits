@@ -14,7 +14,7 @@ public class HitShow : MonoBehaviour
     {
         Lives.hit -= hitanim;
     }
-    void hitanim()
+    public void hitanim()
     {
         animator.SetTrigger("Hit");
     }

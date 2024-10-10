@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering.PostProcessing;
 
 public class Light : MonoBehaviour
 {
@@ -10,22 +11,20 @@ public class Light : MonoBehaviour
     private SpriteRenderer Spr;
     private float time;
     private float timeBit = 0.666f;
-    private float timewhis = 0.666f;
     private void Start()
     {
         Spr.color = new Color(Spr.color.r, Spr.color.g, Spr.color.b, AnimationCurve.Evaluate(time));
-        NewBit();
     }
     void Update()
     {
-        time += Time.deltaTime;
         if (time >= timeBit)
-
-            NewBit();
+        {
             Spr.color = new Color(Spr.color.r, Spr.color.g, Spr.color.b, AnimationCurve.Evaluate(time));
-    }
-    void NewBit()
-    {
-        timewhis = time + timeBit;
+            time -= Time.deltaTime;
+        }
+        else
+        {
+            time += Time.deltaTime;
+        }
     }
 }

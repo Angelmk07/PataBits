@@ -236,32 +236,32 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 0
       value: 0
-      inSlope: 2
-      outSlope: 2
-      tangentMode: 0
+      inSlope: 0.4
+      outSlope: 0.4
+      tangentMode: 34
       weightedMode: 0
       inWeight: 0
-      outWeight: 0
+      outWeight: 0.33333334
     - serializedVersion: 3
-      time: 0.41821784
-      value: 0.93855786
-      inSlope: 0.96177614
-      outSlope: 0.96177614
-      tangentMode: 0
+      time: 0.5
+      value: 0.2
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 34
       weightedMode: 0
       inWeight: 0.33333334
       outWeight: 0.33333334
     - serializedVersion: 3
       time: 1
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
+      value: 0
+      inSlope: -0.4
+      outSlope: -0.4
+      tangentMode: 34
       weightedMode: 0
-      inWeight: 0
+      inWeight: 0.33333334
       outWeight: 0
     m_PreInfinity: 2
-    m_PostInfinity: 1
+    m_PostInfinity: 2
     m_RotationOrder: 4
   Spr: {fileID: 54788595}
 --- !u!1 &109228808
@@ -512,59 +512,32 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 0
       value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
+      inSlope: 0.4
+      outSlope: 0.4
+      tangentMode: 34
       weightedMode: 0
       inWeight: 0
-      outWeight: 0
+      outWeight: 0.33333334
     - serializedVersion: 3
-      time: 0.0010810196
-      value: 0.017690476
-      inSlope: -0.14171745
-      outSlope: -0.14171745
-      tangentMode: 0
+      time: 0.5
+      value: 0.2
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 34
       weightedMode: 0
       inWeight: 0.33333334
       outWeight: 0.33333334
     - serializedVersion: 3
-      time: 0.012612253
-      value: 0.58753306
-      inSlope: 16.137552
-      outSlope: 16.137552
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.14260654
-      outWeight: 0.05292044
-    - serializedVersion: 3
-      time: 0.017504066
-      value: 0.99334383
-      inSlope: 0.21855387
-      outSlope: 0.21855387
-      tangentMode: 0
+      time: 1
+      value: 0
+      inSlope: -0.4
+      outSlope: -0.4
+      tangentMode: 34
       weightedMode: 0
       inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 0.09664407
-      value: 0.0067531466
-      inSlope: 0.07759258
-      outSlope: 0.07759258
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.014375573
-    - serializedVersion: 3
-      time: 0.9974448
-      value: -0.0028982759
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
       outWeight: 0
-    m_PreInfinity: 1
-    m_PostInfinity: 1
+    m_PreInfinity: 2
+    m_PostInfinity: 2
     m_RotationOrder: 4
   Spr: {fileID: 488371225}
 --- !u!1 &488535677 stripped
@@ -1490,6 +1463,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Hist: 0
+  HitShow: {fileID: 488535681}
 --- !u!114 &599020307
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1997,6 +1971,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Hist: 0
+  HitShow: {fileID: 488535681}
 --- !u!114 &979126989
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2627,6 +2602,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Hist: 0
+  HitShow: {fileID: 488535681}
 --- !u!114 &1840209619
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3310,6 +3286,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Hist: 0
+  HitShow: {fileID: 488535681}
 --- !u!114 &2124851434
 MonoBehaviour:
   m_ObjectHideFlags: 0
