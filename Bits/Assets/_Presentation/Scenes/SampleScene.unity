@@ -566,8 +566,8 @@ MonoBehaviour:
   player: {fileID: 1343301882}
   offset: {x: 0, y: 0, z: 0}
   _left: 6.11
-  _right: 114.7
-  _up: 11.9
+  _right: 113.2
+  _up: 11
   _down: 1.4
 --- !u!114 &338444235
 MonoBehaviour:
@@ -870,11 +870,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1772974905318797980, guid: 4541a42250e049d438752858c0e90b31, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 89.94
+      value: -2.83
       objectReference: {fileID: 0}
     - target: {fileID: 1772974905318797980, guid: 4541a42250e049d438752858c0e90b31, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.44
+      value: -0.82
       objectReference: {fileID: 0}
     - target: {fileID: 1772974905318797980, guid: 4541a42250e049d438752858c0e90b31, type: 3}
       propertyPath: m_LocalPosition.z
