@@ -30,12 +30,14 @@ public class Panic : MonoBehaviour
     [SerializeField]
     private int currentIndex = 0;
 
+    [SerializeField]
+    private Sprite[] Corect ;
 
     [SerializeField]
     private float maxTime = 5f;
     private float currentTime;
-
-    public static Action InvisibleLost; 
+    public static Action InvisibleLost;
+    private int[] rands = new int[4];
 
     private void Awake()
     {
@@ -89,6 +91,7 @@ public class Panic : MonoBehaviour
             int ran = UnityEngine.Random.Range(0, 4);
             currentCombo[i] = (Arrow)ran;
             PoinsImage[i].sprite = ArrowSprite[ran];
+            rands[i] = ran;
         }
         inputCombo = new Arrow[4];
         currentIndex = 0;
@@ -110,6 +113,7 @@ public class Panic : MonoBehaviour
         }
         else
         {
+            PoinsImage[currentIndex].sprite = Corect[rands[currentIndex]];
             currentIndex++;
         }
 
@@ -119,7 +123,7 @@ public class Panic : MonoBehaviour
             if (CompareCombos(currentCombo, inputCombo))
             {
                 maxTime -= 0.5f; 
-                if (maxTime < 1f) maxTime = 1f;
+                if (maxTime < 2f) maxTime = 2f;
                 ResetCombo();
                 resetTimer();
             }

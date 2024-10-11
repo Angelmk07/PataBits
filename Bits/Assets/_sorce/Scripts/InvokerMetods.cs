@@ -193,7 +193,7 @@ public class InvokerMethods : MonoBehaviour
 
     private void Combination3Action()
     {
-        player.PlayerRb.AddForce(player.transform.up * player.high * comboMultiplier + player.transform.right * player.forvard *player.PlayerAtackPointRotation.transform.localScale.x* comboMultiplier, ForceMode2D.Impulse);
+        player.PlayerRb.AddForce(player.transform.up * player.high * 1 + player.transform.right * player.forvard *player.PlayerAtackPointRotation.transform.localScale.x, ForceMode2D.Impulse);
         player.PlayerAnimator.SetTrigger("Jump");
     }
 
@@ -205,7 +205,7 @@ public class InvokerMethods : MonoBehaviour
 
     private void ResetCombination()
     {
-        lastCombo = null;
+
         ClearKeyDisplay();
         currentIndex = 0;
         enteredKeys.Clear();

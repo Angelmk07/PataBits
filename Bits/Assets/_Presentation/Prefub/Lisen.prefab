@@ -94,6 +94,11 @@ MonoBehaviour:
   currentCombo: 
   inputCombo: 
   currentIndex: 0
+  Corect:
+  - {fileID: 21300000, guid: e9f6d895a3423824e9a3905a39122ee5, type: 3}
+  - {fileID: 21300000, guid: e0884ffe83103c24fbca1d6773d7e394, type: 3}
+  - {fileID: 21300000, guid: 753246a545a6ccc41b68308b4b38fc82, type: 3}
+  - {fileID: 21300000, guid: 4f93625ab9bd540478f2d484509a2496, type: 3}
   maxTime: 9
 --- !u!1 &439996882765974782
 GameObject:
